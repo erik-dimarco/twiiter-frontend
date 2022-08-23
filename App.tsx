@@ -1,20 +1,23 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import "react-native-gesture-handler";
+import { TailwindProvider } from "tailwindcss-react-native";
+import { Register } from "./src/screens";
+import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+import MainNav from "./src/navigation/MainNav";
+import AuthStack from "./src/navigation/AuthStack";
+import { NavigationContainer } from "@react-navigation/native";
+
+// Initialize ApolloClient
+const client = new ApolloClient({
+  uri: "http://localhost:4000/graphql",
+  cache: new InMemoryCache(),
+});
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <ApolloProvider client={client}>
+      <TailwindProvider>
+        <MainNav />
+      </TailwindProvider>
+    </ApolloProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
