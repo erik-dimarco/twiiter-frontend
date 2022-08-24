@@ -9,10 +9,12 @@ import { useMutation } from "@apollo/client";
 import Button from "../components/Button";
 import { Register as RegisterUser } from "../gql/users.gql";
 import { SafeAreaView } from "react-native";
+import useAuth from "../hooks/useAuth";
 
 type RegisterProps = NativeStackScreenProps<RootStackParamList, "Register">;
 
 const Register: FC<RegisterProps> = ({ navigation }: RegisterProps) => {
+  const { token, setToken } = useAuth();
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -31,7 +33,9 @@ const Register: FC<RegisterProps> = ({ navigation }: RegisterProps) => {
       },
     });
 
-    console.log(data);
+    if (data && data.register) {
+      setToken(data.register.token);
+    }
   };
 
   return (

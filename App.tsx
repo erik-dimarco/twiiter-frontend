@@ -5,6 +5,7 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import MainNav from "./src/navigation/MainNav";
 import AuthStack from "./src/navigation/AuthStack";
 import { NavigationContainer } from "@react-navigation/native";
+import { AuthProvider } from "./src/hooks/useAuth";
 
 // Initialize ApolloClient
 const client = new ApolloClient({
@@ -15,9 +16,11 @@ const client = new ApolloClient({
 export default function App() {
   return (
     <ApolloProvider client={client}>
-      <TailwindProvider>
-        <MainNav />
-      </TailwindProvider>
+      <AuthProvider>
+        <TailwindProvider>
+          <MainNav />
+        </TailwindProvider>
+      </AuthProvider>
     </ApolloProvider>
   );
 }

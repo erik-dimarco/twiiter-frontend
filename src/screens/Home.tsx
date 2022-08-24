@@ -1,13 +1,17 @@
 import React, { FC } from "react";
-import { View, Text } from "react-native";
+import { Text, SafeAreaView, TouchableOpacity } from "react-native";
+import { Button } from "../components";
+import useAuth from "../hooks/useAuth";
 
 const Home: FC = () => {
+  const { signOut } = useAuth();
   return (
-    <View>
+    <SafeAreaView>
       <Text className="text-md text-red-500 flex-1 justify-center items-center">
         Home
       </Text>
-    </View>
+      <Button title="Log out" onPress={signOut} />
+    </SafeAreaView>
   );
 };
 

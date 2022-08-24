@@ -1,13 +1,16 @@
 import { useMutation } from "@apollo/client";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import React, { FC } from "react";
+import React, { FC, useContext } from "react";
 import { View, Text, SafeAreaView, TouchableOpacity } from "react-native";
+import { AsyncStorage } from "react-native";
 import { Button, Input } from "../components";
 import { Login as LoginUser } from "../gql/users.gql";
+import useAuth from "../hooks/useAuth";
 
 type LoginProps = NativeStackScreenProps<RootStackParamList, "Login">;
 
 const Login: FC<LoginProps> = ({ navigation }: LoginProps) => {
+  const { token, setToken } = useAuth();
   const [email, setEmail] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
   const [loginUser] = useMutation(LoginUser);
@@ -22,7 +25,9 @@ const Login: FC<LoginProps> = ({ navigation }: LoginProps) => {
       },
     });
 
-    console.log(data);
+    if (data && data.login) {
+      setToken(data.login.token);
+    }
   };
 
   return (
@@ -34,12 +39,12 @@ const Login: FC<LoginProps> = ({ navigation }: LoginProps) => {
         secureTextEntry
         onChangeText={(password) => setPassword(password)}
       />
-      <Button title="Sign Up" onPress={handleLogin} />
+      <Button title="Log in" onPress={handleLogin} />
       <View className="flex flex-row my-4">
         <Text className="text-sm text-gray-700 mr-1">
           Don't have an account?
         </Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("Register")}>
           <Text className="text-sm text-blue-500 font-medium">
             Join Twitter
           </Text>
