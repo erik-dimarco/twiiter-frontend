@@ -21,6 +21,7 @@ const Register: FC<RegisterProps> = ({ navigation }: RegisterProps) => {
   const [password, setPassword] = useState<string>("");
 
   const [register] = useMutation(RegisterUser);
+
   const handleRegister = async () => {
     const { data } = await register({
       variables: {

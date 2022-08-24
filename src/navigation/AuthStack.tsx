@@ -1,5 +1,4 @@
 import React from "react";
-import { createStackNavigator } from "@react-navigation/stack";
 import { Register, Login } from "../screens";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
