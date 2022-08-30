@@ -1,15 +1,29 @@
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import AppStack from "./AppStack";
 import AuthStack from "./AuthStack";
-import useAuth from "../hooks/useAuth";
+import { useSelector } from "react-redux";
+import { RootState, useAppDispatch } from "../redux/store";
+import { getUserDetails } from "../redux/features/user/userActions";
 
 const MainNav: FC = () => {
-  const { token } = useAuth();
+  const { userToken, userInfo } = useSelector((state: RootState) => state.user);
+  console.log("userToken", userToken);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    console.log("here");
+    if (userToken) {
+      console.log("here2");
+      dispatch(getUserDetails());
+    }
+  }, [dispatch, userToken]);
+
+  console.log("userInfo", userInfo);
 
   return (
     <NavigationContainer>
-      {token !== null ? <AppStack /> : <AuthStack />}
+      {userToken ? <AppStack /> : <AuthStack />}
     </NavigationContainer>
   );
 };

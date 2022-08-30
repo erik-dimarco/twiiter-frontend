@@ -4,43 +4,45 @@ import { View, Text } from "react-native";
 import { useState } from "react";
 import { TouchableOpacity } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { useMutation } from "@apollo/client";
 
 import Button from "../components/Button";
-import { Register as RegisterUser } from "../gql/users.gql";
 import { SafeAreaView } from "react-native";
-import useAuth from "../hooks/useAuth";
+
+// import Error from '../components/Error'
+import { registerUser } from "../redux/features/user/userActions";
+import { RootState, useAppDispatch } from "../redux/store";
+import { useSelector } from "react-redux";
 
 type RegisterProps = NativeStackScreenProps<RootStackParamList, "Register">;
 
+export type UserRegistrationInput = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+};
+
 const Register: FC<RegisterProps> = ({ navigation }: RegisterProps) => {
-  const { token, setToken } = useAuth();
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const dispatch = useAppDispatch();
 
-  const [register] = useMutation(RegisterUser);
+  const { loading, error } = useSelector((state: RootState) => state.user);
 
-  const handleRegister = async () => {
-    const { data } = await register({
-      variables: {
-        input: {
-          firstName,
-          lastName,
-          email,
-          password,
-        },
-      },
-    });
-
-    if (data && data.register) {
-      setToken(data.register.token);
-    }
+  const handleRegistration = async (
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string
+  ): Promise<void> => {
+    dispatch(registerUser({ firstName, lastName, email, password }));
   };
 
   return (
     <SafeAreaView className="flex-1 justify-center items-center">
+      {/* {error && <Error>{error}</Error>} */}
       <Text className="text-xl text-gray-700 mb-4">Join Twitter</Text>
       <Input
         placeholder="First Name"
@@ -56,7 +58,11 @@ const Register: FC<RegisterProps> = ({ navigation }: RegisterProps) => {
         secureTextEntry
         onChangeText={(password) => setPassword(password)}
       />
-      <Button title="Sign Up" onPress={handleRegister} />
+      <Button
+        title="Sign Up"
+        onPress={() => handleRegistration(firstName, lastName, email, password)}
+        disabled={loading}
+      />
       <View className="flex flex-row my-4">
         <Text className="text-sm text-gray-700 mr-1">
           Already Have an Account?
